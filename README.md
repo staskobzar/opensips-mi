@@ -1,6 +1,6 @@
 # Opensips::Mi
 
-TODO: Write a gem description
+OpenSIPs management interface API. 
 
 ## Installation
 
@@ -20,6 +20,7 @@ Or install it yourself as:
 
 TODO: Write usage instructions here
 
+----
 ## Contributing
 
 1. Fork it

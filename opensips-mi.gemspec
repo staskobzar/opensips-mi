@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = Opensips::MI::VERSION
   gem.authors       = ["Stas Kobzar"]
   gem.email         = ["stas@modulis.ca"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Ruby module for interacting with OpenSIPs management interface}
+  gem.summary       = %q{OpenSIPs management interface}
   gem.homepage      = "http://github.com/staskobzar/opensips-mi"
 
   gem.files         = `git ls-files`.split($/)
@@ -17,8 +17,8 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.add_development_dependency("shoulda")
-  gem.add_development_dependency("rdoc")
-  gem.add_development_dependency("bundler")
-  gem.add_development_dependency("simplecov")
+  gem.add_development_dependency('rdoc')
+  gem.add_development_dependency('bundler')
+  gem.add_development_dependency('mocha')
+  gem.add_development_dependency('rake', '~> 0.9.2')
 end
