@@ -1,9 +1,9 @@
-require "transport/fifo"
-require "transport/xmlrpc"
-require "transport/http"
-require "transport/datagram"
+require_relative "transport/fifo"
+#require_relative "transport/xmlrpc"
+#require_relative "transport/http"
+#require_relative "transport/datagram"
 
-module OpenSIPs
+module Opensips
   module MI
     module Transport
 

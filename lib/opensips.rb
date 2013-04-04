@@ -1,7 +1,4 @@
-require "opensips/mi/version"
+require "opensips/mi"
 
 module Opensips
-  module MI
-    # Your code goes here...
-  end
 end
