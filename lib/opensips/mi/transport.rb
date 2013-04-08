@@ -6,7 +6,6 @@ require_relative "transport/fifo"
 module Opensips
   module MI
     module Transport
-
     end
   end
 end
