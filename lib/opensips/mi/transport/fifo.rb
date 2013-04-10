@@ -20,7 +20,7 @@ module Opensips
         def initialize(params)
           # set default values
           @reply_fifo = if params[:reply_fifo].nil?
-                          "opensips_reply." << Digest::MD5.hexdigest(rand.to_s)[0,8]
+                          "opensips_reply_" << Digest::MD5.hexdigest(rand.to_s)[0,8]
                         else
                           @reply_fifo = params[:reply_fifo]
                         end
@@ -44,7 +44,7 @@ module Opensips
             "File #{@fifo_name} is not pipe" unless File.pipe? @fifo_name
           
           # set finalizing method
-          reply_file = File.expand_path(@reply_fifo, @reply_dir)
+          reply_file = File.expand_path(@reply_fifo, @reply_dir) 
           ObjectSpace.define_finalizer(self, proc{self.class.finalize(reply_file)})
         end
 
@@ -58,8 +58,8 @@ module Opensips
         end
 
         def command(cmd, params = [])
-          fd   = IO::sysopen(@fifo_name, Fcntl::O_WRONLY)
-          fifo = IO.open(fd)
+          fd_w   = IO::sysopen(@fifo_name, Fcntl::O_WRONLY)
+          fifo_w = IO.open(fd_w)
 
           request = ":#{cmd}:#{@reply_fifo}\n"
           params.each do |c|
@@ -67,14 +67,20 @@ module Opensips
           end
           # additional new line to terminate command
           request << ?\n
-          fifo.syswrite request
-          fifo.close
+          fifo_w.syswrite request
 
           # read response
-          fd   = IO::sysopen(File.expand_path(@reply_fifo,@reply_dir), Fcntl::O_RDONLY)
-          fifo = IO.open(fd)
-          puts while fifo.gets
-          fifo.close
+          file = File.expand_path(File.expand_path(@reply_fifo,@reply_dir))
+          fd_r  = IO::sysopen(file, Fcntl::O_RDONLY )
+          fifo_r= IO.open(fd_r)
+
+          response = Array[]
+          response << $_.chomp while fifo_r.gets
+          Opensips::MI::Response.new response
+        ensure
+          # make sure we always close files' descriptors
+          fifo_r.close if fifo_r
+          fifo_w.close if fifo_w
         end
 
         def self.finalize(reply_file)

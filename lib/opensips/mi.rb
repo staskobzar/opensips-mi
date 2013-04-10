@@ -1,4 +1,5 @@
 require "opensips/mi/version"
+require "opensips/mi/response"
 require "opensips/mi/transport"
 
 module Opensips

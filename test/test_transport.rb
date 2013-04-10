@@ -82,6 +82,10 @@ describe Opensips::MI::Transport, "testing MI transport layers" do
 
     it "must send command to fifo" do
       fifo = Opensips::MI.connect(:fifo,@fifo_params)
+      IO.stubs(:open).returns(mock(
+        :open => mock(:syswrite => nil),
+        :close => true, 
+        :syswrite => true))
       fifo.command 'which'
     end
 
