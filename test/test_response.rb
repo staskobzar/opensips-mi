@@ -54,7 +54,6 @@ describe Response, "response class" do
       ul = res.ul_dump
       ul["7962"].wont_equal nil
       ul["7962"]['Callid'].must_equal "5e7a1e47da91c41c"
-      
     end
     
   end

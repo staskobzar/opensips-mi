@@ -4,7 +4,7 @@ require 'digest'
 module Opensips
   module MI
     module Transport
-      class Fifo
+      class Fifo < Opensips::MI::Command
         PERMISIONS = '0666'
         attr_accessor :reply_fifo       # name of the reply fifo file 
         attr_accessor :fifo_name        # OpenSIPs fifo file. See mi_fifo module
@@ -59,7 +59,7 @@ module Opensips
 
         def command(cmd, params = [])
           fd_w   = IO::sysopen(@fifo_name, Fcntl::O_WRONLY)
-          fifo_w = IO.open(fd_w)
+          fifo_w  = IO.open(fd_w)
 
           request = ":#{cmd}:#{@reply_fifo}\n"
           params.each do |c|
@@ -70,9 +70,9 @@ module Opensips
           fifo_w.syswrite request
 
           # read response
-          file = File.expand_path(File.expand_path(@reply_fifo,@reply_dir))
-          fd_r  = IO::sysopen(file, Fcntl::O_RDONLY )
-          fifo_r= IO.open(fd_r)
+          file   = File.expand_path(File.expand_path(@reply_fifo,@reply_dir))
+          fd_r   = IO::sysopen(file, Fcntl::O_RDONLY )
+          fifo_r = IO.open(fd_r)
 
           response = Array[]
           response << $_.chomp while fifo_r.gets

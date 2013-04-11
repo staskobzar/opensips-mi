@@ -22,7 +22,7 @@ describe Opensips::MI::Transport, "testing MI transport layers" do
       }.must_raise NameError
     end
 
-    it "must raise when no fifo_name parameter passed" do
+    it "must raise when no fifo_nameInstanceOf.new parameter passed" do
       proc {
         Opensips::MI.connect :fifo, {}
       }.must_raise ArgumentError
@@ -81,12 +81,16 @@ describe Opensips::MI::Transport, "testing MI transport layers" do
     end
 
     it "must send command to fifo" do
+      IO.stubs(:sysopen).returns(5)
+      io_obj = mock()
+      io_obj.expects(:close).twice()
+      io_obj.expects(:syswrite)
+      io_obj.expects(:gets).returns(nil)
+      IO.stubs(:open).twice().returns(io_obj)
+      Opensips::MI::Response.expects(:new).returns(true)
+
       fifo = Opensips::MI.connect(:fifo,@fifo_params)
-      IO.stubs(:open).returns(mock(
-        :open => mock(:syswrite => nil),
-        :close => true, 
-        :syswrite => true))
-      fifo.command 'which'
+      fifo.command('which')
     end
 
   end
