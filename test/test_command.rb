@@ -46,7 +46,7 @@ describe Command, "commands for transport classes" do
                                 "sip:alice@wanderland.com", 
                                 ".",
                                 ".",
-                                %Q/"From: <sip:opensips@sipproxy.com> \r\nTo: <sip:alice@wanderland.com> \r\n"/
+                                %Q/"From: <sip:opensips@sipproxy.com>\r\nTo: <sip:alice@wanderland.com>\r\n"/
                                ])
       mi.uac_dlg  "NOTIFY", 
                   "sip:alice@wanderland.com", 
@@ -80,6 +80,30 @@ describe Command, "commands for transport classes" do
                                 } 
                                )
       mi.event_notify uri, :polycom_check_cfg
+    end
+
+    it "must send MWI notify" do
+      mi = init_class_fifo
+      tag = "123456"
+      uri = "sip:alice@wanderland.com" 
+      new_vm = 5
+      old_vm = 3
+      SecureRandom.stubs(:hex).returns(tag)
+      mi.expects(:uac_dlg).with("NOTIFY",
+                                uri,
+                                {
+                                  'To' => "<#{uri}>",
+                                  'From' => "<#{uri}>;tag=#{tag}", 
+                                  'Event' => 'message-summary', 
+                                  'Subscription-State' => 'active', 
+                                  'Content-Type' => 'application/simple-message-summary', 
+                                  'Content-Length' => 86,
+                                  'nl' => '', 
+                                  'Messages-Waiting' => 'yes', 
+                                  'Message-Account' => 'sip:*97@asterisk.com', 
+                                  'Voice-Message' => "#{new_vm}/#{old_vm} (0/0)"
+                                })
+      mi.mwi_update uri, 'sip:*97@asterisk.com', new_vm, old_vm
     end
 
   end

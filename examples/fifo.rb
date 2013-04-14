@@ -78,12 +78,24 @@ res = opensips.uac_dlg "NOTIFY", "sip:alice@127.0.0.1:5066",
                   }
 puts "  Response code: " << res.code.to_s
 puts "  Response message: " << res.message
+puts "  Response data: " << res.data.inspect
 
 
 puts "."*80
 # Restart Polycom phone
+# use ul_show_contact to to get contact URI
 res = opensips.event_notify 'sip:alice@127.0.0.1:5060', :polycom_check_cfg
 puts "Restart Polycom phone"
 puts "  Response code: " << res.code.to_s
 puts "  Response message: " << res.message
+puts "  Response data: " << res.data.inspect
+
+# send MWI notify
+puts "."*80
+res = opensips.mwi_update 'sip:alice@wanderland.com:5060', 'sip:*97@voicemail.pbx.com', 5
+puts "Send MWI"
+puts "  Response code: " << res.code.to_s
+puts "  Response message: " << res.message
+puts "  Response data: " << res.data.inspect
+
 

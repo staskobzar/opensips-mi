@@ -25,6 +25,7 @@ module Opensips
         # Avaya
         avaya_check_cfg:        'check-sync',
       }
+
       # Interface to mi methods direct call
       def method_missing(md, *params, &block)  
         response = command 'which'
@@ -41,15 +42,6 @@ module Opensips
       end
 
       # = Interface to t_uac_dlg function of transaction (tm) module
-      # == Parameters
-      #   method:     SIP request method (NOTIFY, PUBLISH etc)
-      #   ruri:       Request URI, ex.: sip:555@10.0.0.55:5060
-      #   hf:         Headers array. Additional headers will be added to request. 
-      #               At least "From" and "To" headers must be specify
-      #   nhop:       Next hop SIP URI (OBP); use "." if no value.
-      #   socket:     Local socket to be used for sending the request; use "." if no value. Ex.: udp:10.130.8.21:5060
-      #   body:       (optional, may not be present) request body (if present, requires the "Content-Type" and "Content-length" headers)
-      #
       # Very cool method from OpenSIPs. Can generate and send SIP request method to destination.
       # Example of usage:
       #   - Send NOTIFY with special Event header to force restart SIP phone (equivalent of ASterisk's "sip notify peer")
@@ -63,6 +55,10 @@ module Opensips
       # Example:
       #   hf["From"] => "Alice Liddell <sip:alice@wanderland.com>;tag=843887163"
       #
+      # Special "nl" header with any value is used to input additional "\r\n". This is
+      # useful, for example, for message-summary event to separate application body. This is
+      # because t_uac_dlg expect body parameter as xml only.
+      #
       # Thus, using multiple headers with same header-name is not possible with header hash.
       # However, it is possible to use multiple header-values comma separated (rfc3261, section 7.3.1):
       #   hf["Route"] => "<sip:alice@atlanta.com>, <sip:bob@biloxi.com>"
@@ -73,6 +69,15 @@ module Opensips
       # If there is headers To and From not found, then exception ArgumentError is raised. Also if
       # body part present, Content-Type and Content-length are also mandatory and exception is raised.
       #
+      # == Parameters
+      #   method:     SIP request method (NOTIFY, PUBLISH etc)
+      #   ruri:       Request URI, ex.: sip:555@10.0.0.55:5060
+      #   hf:         Headers array. Additional headers will be added to request. 
+      #               At least "From" and "To" headers must be specify
+      #   nhop:       Next hop SIP URI (OBP); use "." if no value.
+      #   socket:     Local socket to be used for sending the request; use "." if no value. Ex.: udp:10.130.8.21:5060
+      #   body:       (optional, may not be present) request body (if present, requires the "Content-Type" and "Content-length" headers)
+      #
       def uac_dlg method, ruri, hf, next_hop = ?., socket = ?., body = nil
         mandatory_hf = Array['To', 'From']
         mandatory_hf += ['Content-Type', 'Content-Length'] unless body.nil?
@@ -81,7 +86,7 @@ module Opensips
             "Missing mandatory header #{n.capitalize}" unless hf.keys.map{|h| h.downcase}.include?(n)
         end
         # compile headers to string
-        headers = hf.map{|name,val| "#{name}: #{val} "}.join "\r\n"
+        headers = hf.map{|name,val| name.eql?("nl") ? "" : "#{name}: #{val}"}.join "\r\n"
         headers << "\r\n"
         params = [method, ruri, next_hop, socket, "\"#{headers}\""]
         params << body unless body.nil?
@@ -103,7 +108,7 @@ module Opensips
       # *NOTE*: This function will not generate To header tag. This is not complying with
       # SIP protocol specification (rfc3265). NOTIFY must be part of a subscription 
       # dialog. However, it works for the most of the SIP IP phone models.
-      # === Parameters
+      # == Parameters
       #   - uri:    Valid client contact URI (sip:alice@10.0.0.100:5060). 
       #             To get client URI use *ul_show_contact => contact* function
       #   - event:  One of the events from EVENTNOTIFY constant hash
@@ -120,6 +125,39 @@ module Opensips
         
         uac_dlg "NOTIFY", uri, hf
       end
+
+      # = Presence MWI
+      # Send message-summary NOTIFY Event to update phone voicemail status.
+      #
+      # == Parameters
+      #   - uri:      Request URI (sip:alice@wanderland.com:5060)
+      #               To get client URI use *ul_show_contact => contact* function
+      #   - vmaccount:Message Account value. Ex.: sip:*97@asterisk.com
+      #   - new:      Number of new messages. If more than 0 then Messages-Waiting header
+      #               will be "yes". Set to 0 to clear phone MWI
+      #   - old:      (optional) Old messages
+      #   - urg_new:  (optional) New urgent messages
+      #   - urg_old:  (optional) Old urgent messages
+      #
+      def mwi_update uri, vmaccount, new, old = 0, urg_new = 0, urg_old = 0
+        mbody = Hash[
+          'Messages-Waiting'  => (new > 0 ? "yes" : "no"),
+          'Message-Account'   => vmaccount,
+          'Voice-Message'     => "#{new}/#{old} (#{urg_new}/#{urg_old})",
+        ]
+        hf = Hash[
+          'To'                => "<#{uri}>",
+          'From'              => "<#{uri}>;tag=#{SecureRandom.hex}",
+          'Event'             => "message-summary",
+          'Subscription-State'=> "active",
+          'Content-Type'      => "application/simple-message-summary",
+          'Content-Length'    => mbody.map{|k,v| "#{k}: #{v}"}.join("\r\n").length,
+          'nl'                => "",
+        ]
+
+        uac_dlg "NOTIFY", uri, hf.merge(mbody)
+      end
+      
     end
   end
 end
