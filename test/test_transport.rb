@@ -81,6 +81,8 @@ describe Opensips::MI::Transport, "testing MI transport layers" do
     end
 
     it "must send command to fifo" do
+      File.stubs(:exists?).returns(true)
+      File.stubs(:pipe?).returns(true)
       IO.stubs(:sysopen).returns(5)
       io_obj = mock()
       io_obj.expects(:close).twice()

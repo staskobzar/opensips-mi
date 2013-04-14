@@ -89,6 +89,26 @@ module Opensips
         res
       end
 
+      # returns hash of dialogs
+      def dlg_list
+        # parse dialogs information into array
+        # assuming new block always starts with "dialog::  hash=..."
+        calls, key = Hash.new, nil
+        @data.each do |l|
+          l.strip!
+          if l.match(/^dialog::\s+hash=(.*)$/)
+            key = $1
+            calls[key] = Hash.new
+            next
+          end
+          # building dialog array
+          if l.match(/^([^:]+)::\s+(.*)$/)
+            calls[key][$1.to_sym] = $2
+          end
+        end
+        calls
+      end
+
     end
 
     class InvalidResponseData < Exception;end

@@ -35,4 +35,19 @@ class MiniTest::Unit::TestCase
     fix = File.expand_path('fixtures/ul_dump',File.dirname(__FILE__))
     File.readlines(fix).map{|l| l.chomp}
   end
+
+  def response_contacts
+    [
+      "200 OK",
+      "Contact:: <sip:7747@10.132.113.198>;q=;expires=100;flags=0x0;cflags=0x0;socket=<udp:10.130.8.21:5060>;methods=0x1F7F;user_agent=<PolycomSoundStationIP-SSIP_6000-UA/3.3.5.0247_0004f2f18103>",
+      "Contact:: <sip:7747@10.130.8.100;line=628f4ffdfa7316e>;q=;expires=3593;flags=0x0;cflags=0x0;socket=<udp:10.130.8.21:5060>;methods=0xFFFFFFFF;user_agent=<Linphone/3.5.2 (eXosip2/3.6.0)>",
+      "",
+    ]
+  end
+
+  def response_dlg_list
+    fix = File.expand_path('fixtures/dlg_list',File.dirname(__FILE__))
+    File.readlines(fix).map{|l| l.chomp}
+  end
+  
 end

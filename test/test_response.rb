@@ -55,7 +55,47 @@ describe Response, "response class" do
       ul["7962"].wont_equal nil
       ul["7962"]['Callid'].must_equal "5e7a1e47da91c41c"
     end
+
+    it "process uptime response" do
+      res = Response.new [
+        "200 OK",
+        "Now:: Fri Apr 12 22:04:27 2013",
+        "Up since:: Thu Apr 11 21:43:01 2013",
+        "Up time:: 87686 [sec]",
+        ""
+      ]
+      response = res.uptime
+      response.uptime.must_equal 87686
+      response.since.thursday?.must_equal true
+      response.since.hour.must_equal 21
+      response.since.mon.must_equal 4
+    end
+
+    it "must fetch cache value" do
+      res = Response.new [
+        "200 OK",
+        "userdid = [18005552211]",
+        ""
+      ]
+      response = res.cache_fetch
+      response.userdid.must_equal "18005552211"
+    end
     
+    it "must return userloc contacts" do
+      response = Response.new response_contacts
+      res = response.ul_show_contact
+      res.must_be_instance_of Array
+      res.size.must_equal 2
+      res.first[:socket].must_equal "<udp:10.130.8.21:5060>"
+      res.last[:expires].must_equal "3593"
+    end
+
+    it "must process dialogs list" do
+      response = Response.new response_dlg_list
+      res = response.dlg_list
+      res.size.must_equal 1
+      res["3212:2099935485"][:callid].must_equal "1854719653"
+    end
   end
 
 end
