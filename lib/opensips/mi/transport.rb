@@ -1,6 +1,6 @@
 require_relative "transport/fifo"
 require_relative "transport/datagram"
-#require_relative "transport/xmlrpc"
+require_relative "transport/xmlrpc"
 
 module Opensips
   module MI

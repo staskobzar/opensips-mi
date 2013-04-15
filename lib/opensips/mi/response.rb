@@ -1,5 +1,3 @@
-require 'ostruct'
-
 module Opensips
   module MI
     class Response
