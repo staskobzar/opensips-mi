@@ -1,6 +1,3 @@
-require 'fcntl'
-require 'digest'
-
 module Opensips
   module MI
     module Transport

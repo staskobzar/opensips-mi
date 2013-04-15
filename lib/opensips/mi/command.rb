@@ -1,5 +1,3 @@
-require 'securerandom'
-
 module Opensips
   module MI
     class Command

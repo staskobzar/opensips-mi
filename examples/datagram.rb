@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 require 'opensips/mi'
 
-opensips = Opensips::MI.connect :fifo, 
-                                :fifo_name => '/tmp/opensips_fifo',
-                                :reply_dir => '/tmp'
+opensips = Opensips::MI.connect :datagram, 
+                                :host => "192.168.122.128", 
+                                :port => 8809
 
 puts "-"*40 + "send 'which' command to fifo"
 

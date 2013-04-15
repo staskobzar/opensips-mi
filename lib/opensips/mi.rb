@@ -1,3 +1,7 @@
+require 'fcntl'
+require 'securerandom'
+require 'socket'
+
 require "opensips/mi/version"
 require "opensips/mi/response"
 require "opensips/mi/command"

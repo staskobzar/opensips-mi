@@ -8,6 +8,7 @@ describe Opensips::MI::Transport, "testing MI transport layers" do
   after do
   end
 
+  # Fifo
   describe "test fifo transport layer" do
     it "must retrun fifo class instance" do
       File.stubs(:exists?).once.returns(true)
@@ -96,4 +97,46 @@ describe Opensips::MI::Transport, "testing MI transport layers" do
     end
 
   end
+  # Datagram
+  describe "test datagram transport layer" do
+    it "must raise if empty host" do
+      proc {
+        Opensips::MI.connect :datagram, {}
+      }.must_raise ArgumentError
+    end
+
+    it "must raise if empty port" do
+      proc {
+        Opensips::MI.connect :datagram, {:host => "10.10.10.10"}
+      }.must_raise ArgumentError
+    end
+
+    it "must raise if invalid host" do
+      host = "256.0.0.300"
+      res = proc {
+        Opensips::MI.connect :datagram, {:host => host, :port => 8088}
+      }.must_raise SocketError
+      res.message.must_match(/#{host}/)
+    end
+
+    it "must raise if invalid port" do
+      proc {
+        Opensips::MI.connect :datagram, {:host => "10.0.0.1", :port => (2**16 + 1)}
+      }.must_raise SocketError
+      
+      proc {
+        Opensips::MI.connect :datagram, {:host => "10.0.0.1", :port => 0}
+      }.must_raise SocketError
+    end
+    
+    it "must connect to socket" do
+      UDPSocket.expects(:new).returns(mock(:connect => true))
+      res = Opensips::MI.connect :datagram, 
+                                 :host => "192.168.122.128", 
+                                 :port => 8809
+      res.respond_to? :ul_dump
+    end
+
+  end
+
 end
