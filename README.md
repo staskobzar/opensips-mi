@@ -127,7 +127,7 @@ Command function returns `Opensips::MI::Response` class. This class containe fol
 * code: *Integer* Response code: 200, 404 etc
 * message: *String* Response messages: "OK", "Bad headers" etc.
 * rawdata: *Array* Raw response data as array
-* result: *Mixed* Struct/Hash/Array/Nil. This member is used by helper response methods for pretty formated result. See below.
+* result: *Mixed* Struct/Hash/Array/Nil. This member is used by helper response methods for pretty formatted result. See below.
  
 ### Response helpers methods
 
@@ -143,7 +143,6 @@ See example files for details.
 ## Dialog methods
 
 Dialog methods are interface to `t_uac_dlg` function of OpenSIPs' *tm* (transactions) module. 
-Module generates and sends a local SIP request.
 
 ### Interface to t_uac_dlg function of transaction (tm) module
 Very cool method from OpenSIPs. Can generate and send SIP request method to a destination UAC.
@@ -153,7 +152,8 @@ Example of usage:
 * Send REFER to transfer call
 * etc., etc., etc.
 
-**Headers***
+**Headers**
+
 Headers parameter "hf" is a hash of headers of format:
 ```
 header-name => header-value
