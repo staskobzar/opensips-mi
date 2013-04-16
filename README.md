@@ -1,7 +1,7 @@
 # Opensips::Mi
 
-OpenSIPs management interface API. 
-This library support following management interface OpenSIPs modules:
+OpenSIPs management interface library. 
+This library supports following management interfaces and OpenSIPs modules:
 
 * mi_fifo
 * mi_datagram
@@ -32,7 +32,7 @@ Opensips::MI.connect INTERFACE, PARAMS
 ```
 Parameters:
 
-*INTRFACE* - interface key. One of the following:
+*INTRFACE* - interface name. One of the following:
 
 * :fifo
 * :datagram
@@ -40,7 +40,7 @@ Parameters:
 
 *PARAMS* - connection parameters. Depends on interface. See below.
 
-This function will raise exceptions if there are parameters or environment errors.
+This function will raise exceptions if there are parameters' or environment errors.
 Function returns instance of one of the following classes:
 
 * Opensips::MI::Transport::Fifo
@@ -74,13 +74,13 @@ opensips = Opensips::MI.connect :datagram,
 **Parameters hash:**
 
 * host: Hostname or IP address of OpenSIPs server
-* port: Datagram port. See mi_datagram module configuration parameter: `modparam("mi_datagram", "socket_name", "udp:192.168.2.133:8809")`
+* port: Datagram port. See mi_datagram module configuration parameter: `modparam("mi_datagram", "socket_name", "udp:192.168.2.133:8080")`
 
 ### XMLRPC
 ```ruby
 require 'opensips-mi'
 opensips = Opensips::MI.connect :xmlrpc, 
-                                :host => "192.168.122.128", 
+                                :host => "192.168.2.133", 
                                 :port => 8080
 ```
 **Parameters hash:**
@@ -90,7 +90,7 @@ opensips = Opensips::MI.connect :xmlrpc,
 
 ### Command function
 
-Function "*command*" expects fifo command as first argument following by command parameters.
+Function "*command*" expects fifo command as a first argument followed by command parameters.
 For example:
 
 ```ruby
@@ -117,7 +117,7 @@ opensips.uptime
 opensips.ul_show_contact('location', 'alice')
 ```
 
-Such methods first check if fifo function exists against `which` fifo command. 
+Such methods, first of all, check if fifo function exists against `which` fifo command. 
 
 ### Response
 
