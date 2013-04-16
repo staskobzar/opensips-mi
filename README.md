@@ -1,7 +1,7 @@
 # Opensips::Mi
 
 OpenSIPs management interface library. 
-This library supports following management interfaces and OpenSIPs modules:
+This library supports following management interfaces OpenSIPs modules:
 
 * mi_fifo
 * mi_datagram
@@ -61,7 +61,7 @@ opensips = Opensips::MI.connect :fifo,
 **Parameters hash:** 
 
 * fifo_name: OpenSIPs fifo file. See mi_fifo module parameter: `modparam("mi_fifo", "fifo_name", "/tmp/opensips_fifo")`.
-* reply_fifo: (OPTIONAL) Name of the reply fifo file. If not used will generate random file in *reply_dir* and delete after use.
+* reply_fifo: (OPTIONAL) Name of the reply fifo file. If not used, will generate random file in *reply_dir* and delete after use.
 * reply_dir:  (OPTIONAL) Path to directory of reply fifo file.
 
 ### Datagram
@@ -90,8 +90,9 @@ opensips = Opensips::MI.connect :xmlrpc,
 
 ### Command function
 
-Function "*command*" expects fifo command as a first argument followed by command parameters.
-For example:
+Function "*command*" expects fifo command as a first argument, followed by command parameters.
+Command parameters' description can be found in module documentation. For example: http://www.opensips.org/html/docs/modules/1.8.x/dialog.html#id295450
+Usage example:
 
 ```ruby
 require 'opensips-mi'
@@ -117,16 +118,16 @@ opensips.uptime
 opensips.ul_show_contact('location', 'alice')
 ```
 
-Such methods, first of all, check if fifo function exists against `which` fifo command. 
+Those methods first of all verify if mi function exists using `which` mi command. 
 
 ### Response
 
 Command function returns `Opensips::MI::Response` class. This class containe following class members which can be used to process responses:
 
 * code: *Integer* Response code: 200, 404 etc
-* message: *String* Response messages: "OK", "Bad headers"
+* message: *String* Response messages: "OK", "Bad headers" etc.
 * rawdata: *Array* Raw response data as array
-* result: *Mixed* Struct/Hash/Array/Nil. This is member used by helper response methods for pretty formated result. See below.
+* result: *Mixed* Struct/Hash/Array/Nil. This member is used by helper response methods for pretty formated result. See below.
  
 ### Response helpers methods
 
@@ -145,10 +146,10 @@ Dialog methods are interface to `t_uac_dlg` function of OpenSIPs' *tm* (transact
 Module generates and sends a local SIP request.
 
 ### Interface to t_uac_dlg function of transaction (tm) module
-Very cool method from OpenSIPs. Can generate and send SIP request method to destination.
+Very cool method from OpenSIPs. Can generate and send SIP request method to a destination UAC.
 Example of usage:
-* Send NOTIFY with special Event header to force restart SIP phone (equivalent of ASterisk's "sip notify peer")
-* Send PUBLISH to trigger device state change notification
+* Send NOTIFY with special Event header to force restart SIP phone (equivalent of Asterisk's "sip notify peer")
+* Send PUBLISH to trigger notification which changes device state
 * Send REFER to transfer call
 * etc., etc., etc.
 
@@ -163,26 +164,27 @@ hf["From"] => "Alice Liddell <sip:alice@wanderland.com>;tag=843887163"
 ```
 
 Special "nl" header with any value is used to input additional "\r\n". This is
-useful, for example, for message-summary event to separate application body. This is
-because t_uac_dlg expect body parameter as xml only.
+useful, for example, in message-summary event to separate application body. This is
+because t_uac_dlg expects body parameter as an xml only.
 
-Thus, using multiple headers with same header-name is not possible with header hash.
+Thus, using multiple headers with same header-name is not possible.
 However, it is possible to use multiple header-values comma separated (rfc3261, section 7.3.1):
 ```
 hf["Route"] => "<sip:alice@atlanta.com>, <sip:bob@biloxi.com>"
 ```
-Is equivalent to:
+Which is equivalent to:
 ```
 Route: <sip:alice@atlanta.com>
 Route: <sip:bob@biloxi.com>
 ```
-If there is headers To and From not found, then exception ArgumentError is raised. Also if
-body part present, Content-Type and Content-length are also mandatory and exception is raised.
+If there are no To and From headers found, then exception ArgumentError is raised. Also when
+body part is present, Content-Type and Content-length fields are required.
 
 **Parameters**
+
 * method:     SIP request method (NOTIFY, PUBLISH etc)
 * ruri:       Request URI, ex.: sip:555@10.0.0.55:5060
-* hf:         Headers array. Additional headers will be added to request. At least "From" and "To" headers must be specify.
+* hf:         Headers array. Additional headers will be added to request. At least "From" and "To" headers must be present. Headers' names are case-insensitive.
 * nhop:       Next hop SIP URI (OBP); use "." if no value.
 * socket:     Local socket to be used for sending the request; use "." if no value. Ex.: udp:10.130.8.21:5060
 * body:       (optional, may not be present) request body (if present, requires the "Content-Type" and "Content-length" headers)
@@ -198,21 +200,23 @@ opensips.uac_dlg "NOTIFY", "sip:alice@127.0.0.1:5066",
 ```
 
 ### NOTIFY check-sync like event
-NOTIFY Events to restart phone, force configuration reload or 
-report for some SIP IP phone models. 
+NOTIFY Events to restart phone, force configuration reload or report for some SIP IP phone models. 
+Wrapper to `uac_dlg` function.
 The events list was taken from Asterisk configuration file (sip_notify.conf)
 Note that SIP IP phones usually should be configured to accept special notify
-event to reboot. For example, Polycom configuration option to enable special
-event would be:
+event. For example, Polycom configuration option to enable special event would be:
 ```  
   voIpProt.SIP.specialEvent.checkSync.alwaysReboot="1"
 ```
-This function will generate To/From/Event headers. Will use random tag for 
-From header. 
+
+This function will generate To/From/Event headers. Will use random tag for From header. 
+
 *NOTE*: This function will not generate To header tag. This is not complying with
 SIP protocol specification (rfc3265). NOTIFY must be part of a subscription 
 dialog. However, it works for the most of the SIP IP phone models.
+
 **Parameters**
+
 * uri:    Valid client contact URI (sip:alice@10.0.0.100:5060). To get client URI use *ul_show_contact => contact* function
 * event:  One of the events from EVENTNOTIFY constant hash
 * hf:     Header fields. Add To/From header fields here if you do not want them to be auto-generated. Header field example: `hf['To'] => '<sip:alice@wanderland.com>'`
@@ -244,7 +248,7 @@ Send message-summary NOTIFY Event to update phone voicemail status.
 
 **Parameters**
 
-* uri:      Request URI (sip:alice@wanderland.com:5060). To get client URI use *ul_show_contact => contact* function
+* uri:      Request URI (sip:alice@wanderland.com:5060). To get client URI use `ul_show_contact` function, *contact* value
 * vmaccount:Message Account value. Ex.: sip:*97@asterisk.com
 * new:      Number of new messages. If more than 0 then Messages-Waiting header will be "yes". Set to 0 to clear phone MWI
 * old:      (optional) Old messages
