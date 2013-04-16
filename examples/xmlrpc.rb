@@ -4,9 +4,9 @@ require 'opensips/mi'
 # Connect to Opensips using transport interface
 # Raises exception on errors
 begin
-  opensips = Opensips::MI.connect :fifo, 
-                                  :fifo_name => '/tmp/opensips_fifo',
-                                  :reply_dir => '/tmp'
+  opensips = Opensips::MI.connect :xmlrpc, 
+                                  :host => "192.168.122.128", 
+                                  :port => 8080
 rescue => e
   puts "Failed connect to OpenSIPs MI"
   puts ">> " << e.message
@@ -113,7 +113,7 @@ puts "* Response data: " << res.rawdata.inspect
 # Restart Polycom phone
 # use ul_show_contact to to get contact URI
 puts "."*80
-res = opensips.event_notify 'sip:alice@127.0.0.1:5060', :polycom_check_cfg
+res = opensips.event_notify 'sip:alice@127.0.0.1', :polycom_check_cfg
 puts "== Restart Polycom phone"
 puts "* Response code: " << res.code.to_s
 puts "* Response message: " << res.message

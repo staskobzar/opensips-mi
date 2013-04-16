@@ -26,9 +26,16 @@ module Opensips
         end
 
         def command(cmd, params = [])
-          response = @client.call cmd, *params
-          Opensips::MI::Response.new response.split(?\n)
+          response = ["200 OK"]
+          response += @client.call(cmd, *params).split(?\n)
+          response << ""
+          Opensips::MI::Response.new response
+        rescue => e
+          response = ["600 " << e.message]
+          Opensips::MI::Response.new response
         end
+
+        def set_header(header);header;end
 
       end
     end

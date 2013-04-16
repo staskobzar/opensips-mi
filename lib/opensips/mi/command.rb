@@ -28,7 +28,7 @@ module Opensips
       def method_missing(md, *params, &block)  
         response = command 'which'
         raise NoMethodError, 
-          "Method #{md} does not exists" unless response.data.include?(md.to_s)
+          "Method #{md} does not exists" unless response.rawdata.include?(md.to_s)
         response = command md.to_s, params
         # return special helper output if exists
         return response unless response.success
@@ -86,7 +86,11 @@ module Opensips
         # compile headers to string
         headers = hf.map{|name,val| name.eql?("nl") ? "" : "#{name}: #{val}"}.join "\r\n"
         headers << "\r\n"
-        params = [method, ruri, next_hop, socket, "\"#{headers}\""]
+        
+        # hack for xmlrpc which fails if headers are quoted
+        headers = set_header(headers) 
+        #params = [method, ruri, next_hop, socket, "\"#{headers}\""]
+        params = [method, ruri, next_hop, socket, headers]
         params << body unless body.nil?
         # send it and return Response
         command 't_uac_dlg', params
@@ -155,6 +159,8 @@ module Opensips
 
         uac_dlg "NOTIFY", uri, hf.merge(mbody)
       end
+
+      def set_header(header);"\"#{header}\"";end
       
     end
   end
