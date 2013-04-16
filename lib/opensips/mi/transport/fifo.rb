@@ -17,7 +17,7 @@ module Opensips
         def initialize(params)
           # set default values
           @reply_fifo = if params[:reply_fifo].nil?
-                          "opensips_reply_" << Digest::MD5.hexdigest(rand.to_s)[0,8]
+                          "opensips_reply_" << SecureRandom.hex[0,8]
                         else
                           @reply_fifo = params[:reply_fifo]
                         end
