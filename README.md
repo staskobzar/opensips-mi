@@ -1,5 +1,6 @@
 # Opensips::Mi
 [![Build Status](https://travis-ci.org/staskobzar/opensips-mi.png?branch=master)](https://travis-ci.org/staskobzar/opensips-mi)
+[![Code Climate](https://codeclimate.com/github/staskobzar/opensips-mi.png)](https://codeclimate.com/github/staskobzar/opensips-mi)
 
 OpenSIPs management interface library. 
 This library supports following management interfaces OpenSIPs modules:
