@@ -160,7 +160,20 @@ module Opensips
         uac_dlg "NOTIFY", uri, hf.merge(mbody)
       end
 
-      def set_header(header);"\"#{header}\"";end
+      private
+        def set_header(header);"\"#{header}\"";end
+
+        def host_valid? params
+          raise ArgumentError,
+            'Missing socket host' if params[:host].nil?
+          raise ArgumentError,
+            'Missing socket port' if params[:port].nil?
+          Socket.getaddrinfo(params[:host], nil) rescue 
+            raise SocketError, "Invalid host #{params[:host]}" 
+          raise SocketError, 
+            "Invalid port #{params[:port]}" unless (1..(2**16-1)).include?(params[:port])
+          true
+        end
       
     end
   end

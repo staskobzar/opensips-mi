@@ -10,14 +10,7 @@ module Opensips
         end
 
         def initialize(params)
-          raise ArgumentError,
-            'Missing socket host' if params[:host].nil?
-          raise ArgumentError,
-            'Missing socket port' if params[:port].nil?
-          Socket.getaddrinfo(params[:host], nil) rescue 
-            raise SocketError, "Invalid host #{params[:host]}" 
-          raise SocketError, 
-            "Invalid port #{params[:port]}" unless (1..(2**16-1)).include?(params[:port])
+          host_valid? params
           uri = "http://#{params[:host]}:#{params[:port]}/#{RPCSEG}"
           @client = XMLRPC::Client.new_from_uri(uri, nil, 3)
         rescue => e
@@ -29,10 +22,10 @@ module Opensips
           response = ["200 OK"]
           response += @client.call(cmd, *params).split(?\n)
           response << ""
-          Opensips::MI::Response.new response
         rescue => e
           response = ["600 " << e.message]
-          Opensips::MI::Response.new response
+        ensure
+          return Opensips::MI::Response.new response
         end
 
         def set_header(header);header;end

@@ -67,12 +67,13 @@ puts "."*80
 puts "== Command: opensips.ul_show_contact('location', 'alice')"
 res = opensips.ul_show_contact('location', 'alice')
 contact = res.result
-if res.success
+if res.success && !contact.empty?
   puts "Contact 'alice' details"
   puts "  contact: " << contact.first[:contact]
   puts "  user agent: " << contact.first[:user_agent]
 else
-  puts "Failed to get contact. Error message: " << r.message
+  puts "Failed to get contact. May be does not exists." 
+  puts "Response: %d" % r.code
 end
 
 # Successfull response contains array of contact hashs:
