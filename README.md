@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/staskobzar/opensips-mi.png?branch=master)](https://travis-ci.org/staskobzar/opensips-mi)
 [![Code Climate](https://codeclimate.com/github/staskobzar/opensips-mi.png)](https://codeclimate.com/github/staskobzar/opensips-mi)
 [![Gem Version](https://badge.fury.io/rb/opensips-mi.png)](http://badge.fury.io/rb/opensips-mi)
+[![Coverage Status](https://coveralls.io/repos/staskobzar/opensips-mi/badge.png?branch=master)](https://coveralls.io/r/staskobzar/opensips-mi)
 
 OpenSIPs management interface library. 
 This library supports following management interfaces OpenSIPs modules:
