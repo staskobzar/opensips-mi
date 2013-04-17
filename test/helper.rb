@@ -3,9 +3,8 @@ require 'mocha/setup'
 require 'stringio'
 require 'opensips/mi'
 
-
-
-require 'pp'
+require 'coveralls'
+Coveralls.wear!
 
 class MiniTest::Unit::TestCase
 
