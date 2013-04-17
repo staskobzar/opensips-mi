@@ -87,10 +87,8 @@ module Opensips
         headers = hf.map{|name,val| name.eql?("nl") ? "" : "#{name}: #{val}"}.join "\r\n"
         headers << "\r\n"
         
-        # hack for xmlrpc which fails if headers are quoted
-        headers = set_header(headers) 
-        #params = [method, ruri, next_hop, socket, "\"#{headers}\""]
-        params = [method, ruri, next_hop, socket, headers]
+        # set_header is a hack for xmlrpc which fails if headers are quoted
+        params = [method, ruri, next_hop, socket, set_header(headers)]
         params << body unless body.nil?
         # send it and return Response
         command 't_uac_dlg', params
