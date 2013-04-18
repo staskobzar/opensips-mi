@@ -27,7 +27,7 @@ Or install it yourself as:
 
 ## Connecting management interfaces
 
-### Generic connection interface
+### Generic function to connect mi
 
 Using generic function to connect management interface:
 ```ruby
