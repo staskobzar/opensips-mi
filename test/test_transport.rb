@@ -137,6 +137,21 @@ describe Opensips::MI::Transport, "testing MI transport layers" do
       res.respond_to?(:uac_dlg).must_equal true
     end
 
+    it "must send valid command to socket" do
+      cmd = 'command'
+      params = ["aaa","bbb","ccc"]
+
+      sock = mock('UDPSocket')
+      sock.stubs(:connect)
+      sock.stubs(:send).with([":#{cmd}:", *params].join(?\n) + ?\n, 0)
+      sock.stubs(:recvfrom).returns( response_data_cmd_which )
+      UDPSocket.expects(:new).returns(sock)
+      res = Opensips::MI.connect :datagram, 
+                                 :host => "192.168.122.128", 
+                                 :port => 8809
+      res.command(cmd, params).code.must_equal 200
+    end
+
   end
 
   # XMLRPC
@@ -174,12 +189,19 @@ describe Opensips::MI::Transport, "testing MI transport layers" do
     it "must connect to xmlrpc server" do
       host = "192.168.122.128" 
       port = 8080
-      XMLRPC::Client.stubs(:new_from_uri).
+      rpc = mock('XMLRPC::Client')
+      rpc.stubs(:new_from_uri).
         with("http://#{host}:#{port}/#{Opensips::MI::Transport::Xmlrpc::RPCSEG}",nil,3)
       res = Opensips::MI.connect :xmlrpc, 
                                  :host => host, 
                                  :port => port
+
       res.respond_to?(:uac_dlg).must_equal true
+      
+      params = ["aaa","bbb"]
+      cmd    = "command"
+      rpc.stubs(:call).with(cmd, *params).returns( response_data_cmd_which )
+      res.command(cmd, params) #.must_be_instance_of Opensips::MI::Response
     end
 
   end

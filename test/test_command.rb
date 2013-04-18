@@ -17,6 +17,14 @@ describe Command, "commands for transport classes" do
       }.must_raise NoMethodError
     end
 
+    it "must send command" do
+      mi = init_class_fifo
+      mi.expects(:command).with('which').returns(Opensips::MI::Response.new(response_data_cmd_which))
+      mi.expects(:command).with('ul_sync',[]).returns(Opensips::MI::Response.new(["200 OK",""]))
+      mi.ul_sync.code.must_equal 200
+      
+    end
+
     it "must raise when missing basic mandatory headers" do
       mi = init_class_fifo
       ret = proc {
