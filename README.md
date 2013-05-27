@@ -31,7 +31,7 @@ Or install it yourself as:
 
 Using generic function to connect management interface:
 ```ruby
-require 'opensips-mi'
+require 'opensips/mi'
 Opensips::MI.connect INTERFACE, PARAMS
 ```
 Parameters:
@@ -54,7 +54,7 @@ Function returns instance of one of the following classes:
 ### FIFO
 
 ```ruby
-require 'opensips-mi'
+require 'opensips/mi'
 opensips = Opensips::MI.connect :fifo, 
                                 :fifo_name => '/tmp/opensips_fifo',
                                 :reply_fifo => 'opensips_reply' . $$,
@@ -70,7 +70,7 @@ opensips = Opensips::MI.connect :fifo,
 
 ### Datagram
 ```ruby
-require 'opensips-mi'
+require 'opensips/mi'
 opensips = Opensips::MI.connect :datagram, 
                                 :host => "sipproxy.com", 
                                 :port => 8809
@@ -82,7 +82,7 @@ opensips = Opensips::MI.connect :datagram,
 
 ### XMLRPC
 ```ruby
-require 'opensips-mi'
+require 'opensips/mi'
 opensips = Opensips::MI.connect :xmlrpc, 
                                 :host => "192.168.2.133", 
                                 :port => 8080
@@ -99,7 +99,7 @@ Command parameters' description can be found in module documentation. For exampl
 Usage example:
 
 ```ruby
-require 'opensips-mi'
+require 'opensips/mi'
 opensips = Opensips::MI.connect :fifo, 
                                 :fifo_name => '/tmp/opensips_fifo'
                                 
@@ -111,7 +111,7 @@ opensips.command('get_statistics', 'dialog','tm')
 
 It is also possible to use command names as a method interface:
 ```ruby
-require 'opensips-mi'
+require 'opensips/mi'
 opensips = Opensips::MI.connect :datagram, 
                                 :host => "192.168.122.128", 
                                 :port => 8809
