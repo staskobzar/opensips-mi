@@ -42,6 +42,36 @@ class MiniTest::Unit::TestCase
     File.readlines(fix).map{|l| l.chomp}
   end
 
+  def response_dr_gw_status_cmd
+    Array[
+      "200 OK",
+      ""
+    ]
+  end
+
+  def response_dr_gw_status_single
+    Array[
+      "200 OK",
+      "Enabled:: yes",
+      ""
+    ]
+  end
+
+  def response_dr_gw_status_list
+    Array[
+      "200 OK",
+      "ID:: gw1 IP=212.182.133.202:5060 Enabled=no ", 
+      "ID:: gw2 IP=213.15.222.97:5060 Enabled=yes", 
+      "ID:: gw3 IP=200.182.132.201:5060 Enabled=yes", 
+      "ID:: gw4 IP=200.182.135.204:5060 Enabled=yes", 
+      "ID:: pstn1 IP=199.18.14.101:5060 Enabled=yes", 
+      "ID:: pstn2 IP=199.18.14.102:5060 Enabled=no", 
+      "ID:: pstn3 IP=199.18.12.103:5060 Enabled=yes", 
+      "ID:: pstn4 IP=199.18.12.104:5060 Enabled=yes",
+      ""
+    ]
+  end
+
   def response_contacts
     [
       "200 OK",

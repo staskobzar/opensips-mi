@@ -114,7 +114,32 @@ module Opensips
         self
       end
 
-    end
+      def dr_gw_status
+        return self if @rawdata.empty?
+        if /\AEnabled::\s+(?<status>yes|no)/ =~ @rawdata[0]
+          self.class.send(:define_method, :enabled, proc{status.eql?('yes')})
+          return self
+        end
+        @result = dr_gws_hash
+        self
+      end
+
+      private
+       def dr_gws_hash
+         Hash[
+           @rawdata.map do |gw|
+             if /\AID::\s+(?<id>[^\s]+)\s+IP=(?<ip>[^:]+):(?<port>\d+)\s+Enabled=(?<status>yes|no)/ =~ gw
+               [id, {
+                 enabled: status.eql?('yes'),
+                 ipaddr: ip,
+                 port: port
+               }]
+             end
+           end
+         ]
+       end
+
+    end # END class
 
     class InvalidResponseData < Exception;end
     class EmptyResponseData < Exception;end

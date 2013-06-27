@@ -96,6 +96,29 @@ describe Response, "response class" do
       res.size.must_equal 1
       res["3212:2099935485"][:callid].must_equal "1854719653"
     end
+
+    it "must process dr_gw_status response in hash" do
+      response = Response.new response_dr_gw_status_list
+      drgws = response.dr_gw_status
+      drgws.result.size.must_equal 8
+      drgws.result["pstn4"][:ipaddr].must_equal "199.18.12.104"
+      drgws.result["pstn3"][:port].must_equal "5060"
+      drgws.result["gw1"][:enabled].must_equal false
+      drgws.result["gw4"][:enabled].must_equal true
+    end
+
+    it "must return raw data if dr_gw_status is run with arguments" do
+      response = Response.new response_dr_gw_status_single
+      drgws = response.dr_gw_status
+      drgws.enabled.must_equal true
+    end
+
+    it "result must be empty if command send to dr_gw_status" do 
+      response = Response.new response_dr_gw_status_cmd
+      drgws = response.dr_gw_status
+      drgws.result.must_equal nil
+      drgws.success.must_equal true
+    end
   end
 
 end
