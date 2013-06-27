@@ -128,7 +128,7 @@ module Opensips
        def dr_gws_hash
          Hash[
            @rawdata.map do |gw|
-             if /\AID::\s+(?<id>[^\s]+)\s+IP=(?<ip>[^:]+):(?<port>\d+)\s+Enabled=(?<status>yes|no)/ =~ gw
+             if /\AID::\s+(?<id>[^\s]+)\s+IP=(?<ip>[^:\s]+):?(?<port>\d+)?\s+Enabled=(?<status>yes|no)/ =~ gw
                [id, {
                  enabled: status.eql?('yes'),
                  ipaddr: ip,
