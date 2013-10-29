@@ -78,7 +78,7 @@ module Opensips
       #
       def uac_dlg method, ruri, hf, next_hop = ?., socket = ?., body = nil
         mandatory_hf = Array['To', 'From']
-        mandatory_hf += ['Content-Type', 'Content-Length'] unless body.nil?
+        mandatory_hf += ['Content-Type'] unless body.nil?
         mandatory_hf.map{|h|h.downcase}.each do |n|
           raise ArgumentError, 
             "Missing mandatory header #{n.capitalize}" unless hf.keys.map{|h| h.downcase}.include?(n)
@@ -151,7 +151,6 @@ module Opensips
           'Event'             => "message-summary",
           'Subscription-State'=> "active",
           'Content-Type'      => "application/simple-message-summary",
-          'Content-Length'    => mbody.map{|k,v| "#{k}: #{v}"}.join("\r\n").length,
           'nl'                => "",
         ]
 
