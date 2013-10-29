@@ -36,17 +36,6 @@ describe Command, "commands for transport classes" do
 
     end
 
-    it "must raise when missing body mandatory headers" do
-      mi = init_class_fifo
-      ret = proc {
-        mi.uac_dlg  "NOTIFY", 
-                    "sip:alice@wanderland.com", 
-                    {"From" => "<sip:opensips>", "To" => "<sip:bob>", "content-type" => "xml"},
-                    ?., ?., "<body>Hello</body>"
-      }.must_raise ArgumentError
-      ret.message.must_match(/header Content-length/)
-    end
-
     it "must have good parameters" do
       mi = init_class_fifo
       mi.expects(:command).with('t_uac_dlg', [
@@ -105,7 +94,6 @@ describe Command, "commands for transport classes" do
                                   'Event' => 'message-summary', 
                                   'Subscription-State' => 'active', 
                                   'Content-Type' => 'application/simple-message-summary', 
-                                  'Content-Length' => 86,
                                   'nl' => '', 
                                   'Messages-Waiting' => 'yes', 
                                   'Message-Account' => 'sip:*97@asterisk.com', 
