@@ -26,9 +26,6 @@ module Opensips
 
       # Interface to mi methods direct call
       def method_missing(md, *params, &block)  
-        response = command 'which'
-        raise NoMethodError, 
-          "Method #{md} does not exists" unless response.rawdata.include?(md.to_s)
         response = command md.to_s, params
         # return special helper output if exists
         return response unless response.success
