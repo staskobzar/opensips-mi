@@ -82,7 +82,7 @@ module Opensips
         end
         # compile headers to string
         headers = hf.map{|name,val| name.eql?("nl") ? "" : "#{name}: #{val}"}.join "\r\n"
-        headers << "\r\n"
+        headers << "\r\n\r\n"
         
         # set_header is a hack for xmlrpc which fails if headers are quoted
         params = [method, ruri, next_hop, socket, set_header(headers)]
