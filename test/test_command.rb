@@ -9,17 +9,9 @@ describe Command, "commands for transport classes" do
   end
 
   describe "missing methods" do
-    it "must raise if parameter is not Array" do
-      mi = init_class_fifo
-      mi.expects(:command).with('which').returns(mock(:rawdata => ['meth1', 'meth2']))
-      proc {
-        mi.unknown_command
-      }.must_raise NoMethodError
-    end
 
     it "must send command" do
       mi = init_class_fifo
-      mi.expects(:command).with('which').returns(Opensips::MI::Response.new(response_data_cmd_which))
       mi.expects(:command).with('ul_sync',[]).returns(Opensips::MI::Response.new(["200 OK",""]))
       mi.ul_sync.code.must_equal 200
       
@@ -43,7 +35,7 @@ describe Command, "commands for transport classes" do
                                 "sip:alice@wanderland.com", 
                                 ".",
                                 ".",
-                                %Q/"From: <sip:opensips@sipproxy.com>\r\nTo: <sip:alice@wanderland.com>\r\n"/
+                                %Q/"From: <sip:opensips@sipproxy.com>\r\nTo: <sip:alice@wanderland.com>\r\n\r\n"/
                                ])
       mi.uac_dlg  "NOTIFY", 
                   "sip:alice@wanderland.com", 
