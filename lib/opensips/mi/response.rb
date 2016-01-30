@@ -139,6 +139,25 @@ module Opensips
         @result = dr_gws_hash
         self
       end
+      
+      # returns array containing list of opensips processes
+      def ps
+        processes = []
+        @rawdata.each do |l|
+          l.slice! "Process::  "
+          h = {}
+          
+          l.split(" ", 3).each do |x| 
+            key, val = x.split("=", 2)
+            h[key.downcase.to_sym] = val
+          end
+          
+          processes << OpenStruct.new(h)
+        end
+        
+        @result = processes
+        self
+      end
 
       private
        def dr_gws_hash

@@ -141,6 +141,7 @@ There are several helper methods which return conveniently formatted data:
 * cache_fetch
 * ul_show_contact
 * dlg_list
+* ps
 
 See example files for details.
 
