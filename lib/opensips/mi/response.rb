@@ -22,26 +22,35 @@ module Opensips
         @success = (200..299).include?(@code)
 
         # successfull responses have additional new line
-        data.pop if @success
+        #data.pop if @success
         @rawdata = data
         @result = nil
       end
       
       # Parse user locations records to Hash
       def ul_dump
-        return nil unless /^Domain:: location table=\d+ records=(\d+)$/ =~ @rawdata.shift
-        records = Hash.new
-        aor = ''
+        res = {}
+        aor = nil
+        contact = nil
+        
         @rawdata.each do |r|
-          if /\tAOR:: (?<peer>.+)$/ =~ r
-            aor = peer
-            records[aor] = Hash.new
+          next if r.start_with?("Domain")
+          r = r.strip
+          key, val = r.split(":: ")
+          
+          if key == "AOR"
+            aor = val
+            res[aor] = []
+            next
+          elsif key == "Contact"
+            contact = {}
+            res[aor] << contact
           end
-          if /^\t{2,3}(?<key>[^:]+):: (?<val>.*)$/ =~ r
-            records[aor][key] = val if aor
-          end
+          
+          contact[key.gsub(?-, ?_).downcase.to_sym] = val
         end
-        @result = records
+        
+        @result = res
         self
       end
 
@@ -76,19 +85,26 @@ module Opensips
       
       # returns Array of registered contacts
       def ul_show_contact
-        res = Array.new
+        res = {}
+        aor = nil
+        contact = nil
+        
         @rawdata.each do |r|
-          cont = Hash.new
-          r.split(?;).each do |rec|
-            if /^Contact:: (.*)$/ =~ rec
-              cont[:contact] = $1
-            else
-              key,val = rec.split ?=
-              cont[key.to_sym] = val
-            end
+          r = r.strip
+          key, val = r.split(":: ")
+          
+          if key == "AOR"
+            aor = val
+            res[aor] = []
+            next
+          elsif key == "Contact"
+            contact = {}
+            res[aor] << contact
           end
-          res << cont
+          
+          contact[key.gsub(?-, ?_).downcase.to_sym] = val
         end
+        
         @result = res
         self
       end
