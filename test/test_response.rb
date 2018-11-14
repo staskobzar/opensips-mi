@@ -53,7 +53,7 @@ describe Response, "response class" do
       res = Response.new(response_uldump)
       ul = res.ul_dump
       ul.result["7962"].wont_equal nil
-      ul.result["7962"]['Callid'].must_equal "5e7a1e47da91c41c"
+      ul.result["7962"][:callid].must_equal "5e7a1e47da91c41c"
     end
 
     it "process uptime response" do
@@ -80,7 +80,7 @@ describe Response, "response class" do
       response = res.cache_fetch
       response.result.userdid.must_equal "18005552211"
     end
-    
+
     it "must return userloc contacts" do
       response = Response.new response_contacts
       res = response.ul_show_contact.result

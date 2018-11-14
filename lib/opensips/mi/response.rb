@@ -10,7 +10,7 @@ module Opensips
           'Invalid parameter' unless data.is_a? Array
         raise EmptyResponseData, 
           'Empty parameter array' if data.empty?
-        
+
         if /^(?<code>\d+) (?<message>.+)$/ =~ data.shift.to_s
           @code = code.to_i
           @message = message
@@ -22,22 +22,21 @@ module Opensips
         @success = (200..299).include?(@code)
 
         # successfull responses have additional new line
-        #data.pop if @success
         @rawdata = data
         @result = nil
       end
-      
+
       # Parse user locations records to Hash
       def ul_dump
         res = {}
         aor = nil
         contact = nil
-        
+
         @rawdata.each do |r|
           next if r.start_with?("Domain")
           r = r.strip
           key, val = r.split(":: ")
-          
+
           if key == "AOR"
             aor = val
             res[aor] = []
@@ -46,10 +45,10 @@ module Opensips
             contact = {}
             res[aor] << contact
           end
-          
-          contact[key.gsub(?-, ?_).downcase.to_sym] = val
+
+          contact[key.gsub(?-, ?_).downcase.to_sym] = val if key
         end
-        
+
         @result = res
         self
       end
@@ -82,29 +81,29 @@ module Opensips
         @result = OpenStruct.new res
         self
       end
-      
+
       # returns Array of registered contacts
       def ul_show_contact
         res = {}
         aor = nil
         contact = nil
-        
+
         @rawdata.each do |r|
           r = r.strip
           key, val = r.split(":: ")
-          
+
           if key == "AOR"
             aor = val
             res[aor] = []
             next
           elsif key == "Contact"
             contact = {}
-            res[aor] << contact
+            res[aor] << contact if res[aor]
           end
-          
-          contact[key.gsub(?-, ?_).downcase.to_sym] = val
+
+          contact[key.gsub(?-, ?_).downcase.to_sym] = val if key
         end
-        
+
         @result = res
         self
       end
@@ -139,22 +138,22 @@ module Opensips
         @result = dr_gws_hash
         self
       end
-      
+
       # returns array containing list of opensips processes
       def ps
         processes = []
         @rawdata.each do |l|
           l.slice! "Process::  "
           h = {}
-          
+
           l.split(" ", 3).each do |x| 
             key, val = x.split("=", 2)
             h[key.downcase.to_sym] = val
           end
-          
+
           processes << OpenStruct.new(h)
         end
-        
+
         @result = processes
         self
       end

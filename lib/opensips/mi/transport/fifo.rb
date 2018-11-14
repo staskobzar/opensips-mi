@@ -28,7 +28,7 @@ module Opensips
                           params[:reply_dir]
                         end
           raise ArgumentError,
-            "Fifo reply directory does not exists #{@reply_dir}" unless Dir.exists? @reply_dir 
+            "Fifo reply directory does not exists #{@reply_dir}" unless Dir.exist? @reply_dir 
 
           # fifo_name is required parameter
           raise ArgumentError, 
@@ -36,10 +36,10 @@ module Opensips
 
           @fifo_name      = params[:fifo_name]
           raise ArgumentError,
-            "OpenSIPs fifo_name file does not exist: #{@fifo_name}" unless File.exists? @fifo_name
+            "OpenSIPs fifo_name file does not exist: #{@fifo_name}" unless File.exist? @fifo_name
           raise ArgumentError,
             "File #{@fifo_name} is not pipe" unless File.pipe? @fifo_name
-          
+
           # set finalizing method
           reply_file = File.expand_path(@reply_fifo, @reply_dir) 
           ObjectSpace.define_finalizer(self, proc{self.class.finalize(reply_file)})
@@ -81,7 +81,7 @@ module Opensips
         end
 
         def self.finalize(reply_file)
-          File.unlink(reply_file) if File.exists?(reply_file)
+          File.unlink(reply_file) if File.exist?(reply_file)
         end
 
       end
