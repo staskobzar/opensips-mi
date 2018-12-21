@@ -3,21 +3,23 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'opensips/mi/version'
 
-Gem::Specification.new do |gem|
-  gem.name          = "opensips-mi"
-  gem.version       = Opensips::MI::VERSION
-  gem.authors       = ["Stas Kobzar"]
-  gem.email         = ["stas@modulis.ca"]
-  gem.description   = %q{Ruby module for interacting with OpenSIPs management interface}
-  gem.summary       = %q{OpenSIPs management interface}
-  gem.homepage      = "http://github.com/staskobzar/opensips-mi"
+Gem::Specification.new do |spec|
+  spec.name          = "opensips-mi"
+  spec.version       = Opensips::MI::VERSION
+  spec.authors       = ["Stas Kobzar"]
+  spec.email         = ["stas@modulis.ca"]
+  spec.description   = %q{Ruby module for interacting with OpenSIPs management interface}
+  spec.summary       = %q{OpenSIPs management interface}
+  spec.homepage      = "http://github.com/staskobzar/opensips-mi"
 
-  gem.files         = `git ls-files`.split($/).reject{|f| %r|^examples/.*|.match f}
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.require_paths = ["lib"]
+  spec.files         = `git ls-files`.split($/).reject{|f| %r|^examples/.*|.match f}
+  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+  spec.require_paths = ["lib"]
 
-  gem.add_development_dependency('bundler', '~> 1.3')
-  gem.add_development_dependency('rdoc')
-  gem.add_development_dependency('rake')
+  spec.add_dependency "xmlrpc", "~> 0.3"
+
+  spec.add_development_dependency "bundler", "~> 1.16"
+  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rspec", "~> 3.8"
+  spec.add_development_dependency('rdoc')
 end

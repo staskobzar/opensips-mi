@@ -83,7 +83,7 @@ module Opensips
         # compile headers to string
         headers = hf.map{|name,val| name.eql?("nl") ? "" : "#{name}: #{val}"}.join "\r\n"
         headers << "\r\n\r\n"
-        
+
         # set_header is a hack for xmlrpc which fails if headers are quoted
         params = [method, ruri, next_hop, socket, set_header(headers)]
         params << body unless body.nil?
@@ -119,7 +119,7 @@ module Opensips
         hf['To'] = "<#{uri}>" unless hf.keys.map{|k|k.downcase}.include?('to')
         hf['From'] = "<#{uri}>;tag=#{SecureRandom.hex}" unless hf.keys.map{|k|k.downcase}.include?('from')
         hf['Event'] = EVENTNOTIFY[event]
-        
+
         uac_dlg "NOTIFY", uri, hf
       end
 
@@ -168,7 +168,6 @@ module Opensips
             "Invalid port #{params[:port]}" unless (1..(2**16-1)).include?(params[:port])
           true
         end
-      
     end
   end
 end

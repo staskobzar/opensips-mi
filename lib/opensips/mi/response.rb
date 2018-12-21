@@ -84,28 +84,22 @@ module Opensips
 
       # returns Array of registered contacts
       def ul_show_contact
-        res = {}
-        aor = nil
-        contact = nil
-
+        result = []
         @rawdata.each do |r|
-          r = r.strip
-          key, val = r.split(":: ")
+          _, contact = r.strip.split("Contact:: ")
+          next unless contact
 
-          if key == "AOR"
-            aor = val
-            res[aor] = []
-            next
-          elsif key == "Contact"
-            contact = {}
-            res[aor] << contact if res[aor]
+          params = contact.split(';')
+
+          res = {contact: params.shift}
+
+          params.each do |p|
+            key, val = p.split('=')
+            res[key.gsub(?-, ?_).downcase.to_sym] = val
           end
-
-          contact[key.gsub(?-, ?_).downcase.to_sym] = val if key
+          result << res
         end
-
-        @result = res
-        self
+        @result = result
       end
 
       # returns hash of dialogs
@@ -146,7 +140,7 @@ module Opensips
           l.slice! "Process::  "
           h = {}
 
-          l.split(" ", 3).each do |x| 
+          l.split(" ", 3).each do |x|
             key, val = x.split("=", 2)
             h[key.downcase.to_sym] = val
           end
@@ -160,17 +154,18 @@ module Opensips
 
       private
        def dr_gws_hash
-         Hash[
-           @rawdata.map do |gw|
-             if /\AID::\s+(?<id>[^\s]+)\s+IP=(?<ip>[^:\s]+):?(?<port>\d+)?\s+Enabled=(?<status>yes|no)/ =~ gw
-               [id, {
-                 enabled: status.eql?('yes'),
-                 ipaddr: ip,
-                 port: port
-               }]
-             end
+         return nil if @rawdata.empty?
+         res = {}
+         @rawdata.map do |gw|
+           if /\AID::\s+(?<id>[^\s]+)\s+IP=(?<ip>[^:\s]+):?(?<port>\d+)?\s+Enabled=(?<status>yes|no)/ =~ gw
+             res[id] = {
+               enabled: status.eql?('yes'),
+               ipaddr: ip,
+               port: port
+             }
            end
-         ]
+         end
+         res.empty? ? nil : res
        end
 
     end # END class

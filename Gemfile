@@ -1,10 +1,7 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-group :test do
-  gem 'minitest'
-  gem 'coveralls', require: false
-  gem 'simplecov' #, :require => false
-  gem 'mocha'
-end
+git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+
+gem 'simplecov', require: false, group: :test
 
 gemspec
