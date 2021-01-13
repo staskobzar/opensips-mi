@@ -11,6 +11,9 @@ This library supports following management interfaces OpenSIPs modules:
 * mi_datagram
 * mi_xmlrpc
 
+## Disclamer
+This is old version and works only with olde openisips versions (older then v3)
+
 ## Installation
 
 Add this line to your application's Gemfile:
