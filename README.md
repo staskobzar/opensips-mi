@@ -73,12 +73,14 @@ opensips = Opensips::MI.connect :fifo,
 require 'opensips/mi'
 opensips = Opensips::MI.connect :datagram, 
                                 :host => "sipproxy.com", 
-                                :port => 8809
+                                :port => 8809,
+                                :timeout => 5
 ```
 **Parameters hash:**
 
 * host: Hostname or IP address of OpenSIPs server
 * port: Datagram port. See mi_datagram module configuration parameter: `modparam("mi_datagram", "socket_name", "udp:192.168.2.133:8080")`
+* timeout: Timeout in seconds to wait send/recv commands. Optional. Default 3 seconds.
 
 ### XMLRPC
 ```ruby

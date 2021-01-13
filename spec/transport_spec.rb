@@ -67,9 +67,26 @@ describe Transport do
         Opensips::MI.connect :datagram, {:host => "10.0.0.1", :port => 0}
       }.to raise_error SocketError
     end
+
+    it "default timeout is 3 sec" do
+      mi=Opensips::MI.connect :datagram, {:host => "10.0.0.1", :port => 8088}
+      expect(mi.tout).to be(3)
+    end
+
+    it "must set timeout from params" do
+      mi=Opensips::MI.connect :datagram, {:host => "10.0.0.1", :port => 8088, :timeout => 15}
+      expect(mi.tout).to be(15)
+    end
+
+    it "must foo" do
+      mi=Opensips::MI.connect :datagram, {:host => "10.0.0.1", :port => 8088, :timeout => 1}
+      expect {
+        mi.uptime
+      }.to raise_error Timeout::Error
+    end
   end
 
-  context "datagram" do
+  context "xmlrpc" do
     it "must raise if empty host" do
       expect {
         Opensips::MI.connect :xmlrpc, {}

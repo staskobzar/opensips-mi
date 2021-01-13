@@ -6,8 +6,9 @@ require 'opensips/mi/version'
 Gem::Specification.new do |spec|
   spec.name          = "opensips-mi"
   spec.version       = Opensips::MI::VERSION
+  spec.licenses      = ['MIT']
   spec.authors       = ["Stas Kobzar"]
-  spec.email         = ["stas@modulis.ca"]
+  spec.email         = ["staskobzar@gmail.com"]
   spec.description   = %q{Ruby module for interacting with OpenSIPs management interface}
   spec.summary       = %q{OpenSIPs management interface}
   spec.homepage      = "http://github.com/staskobzar/opensips-mi"
@@ -18,8 +19,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "xmlrpc", "~> 0.3"
 
-  spec.add_development_dependency "bundler", "~> 1.16"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec", "~> 3.8"
-  spec.add_development_dependency('rdoc')
+  spec.add_development_dependency "bundler", "~>2.2.5"
+  spec.add_development_dependency "rake", "~>13.0.3"
+  spec.add_development_dependency "rspec", "~>3.10.0"
 end
