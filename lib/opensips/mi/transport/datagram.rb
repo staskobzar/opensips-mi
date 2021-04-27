@@ -1,5 +1,3 @@
-require 'timeout'
-
 module Opensips
   module MI
     module Transport
@@ -15,8 +13,7 @@ module Opensips
 
         def initialize(params)
           host_valid? params
-          @sock = UDPSocket.new
-          @sock.connect params[:host], params[:port]
+          @sock = Socketry::UDP::Socket.connect(params[:host], params[:port])
           @timeout = params[:timeout].to_i
         end
 
@@ -25,13 +22,7 @@ module Opensips
           params.each do |c|
             request << "#{c}\n"
           end
-          Timeout::timeout(tout, nil, "Timeout send request to datagram MI") {
-            @sock.send request, 0
-          }
-          # will raise Errno::ECONNREFUSED if failed to connect
-          Timeout::timeout(tout,nil,"Timeout receive respond from datagram MI") {
-            response, = @sock.recvfrom RECVMAXLEN
-          }
+          response = send(request)
           Opensips::MI::Response.new response.split(?\n)
         end
 
@@ -39,6 +30,14 @@ module Opensips
           @timeout > 0 ? @timeout : TIMEOUT
         end
 
+        private
+        def send(request)
+          @sock.send request
+          response = @sock.recvfrom RECVMAXLEN, timeout: tout
+          response.message
+        rescue => e
+          "500 #{e}"
+        end
       end
     end
   end

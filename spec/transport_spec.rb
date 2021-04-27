@@ -78,11 +78,11 @@ describe Transport do
       expect(mi.tout).to be(15)
     end
 
-    it "must foo" do
+    it "must return socket error" do
       mi=Opensips::MI.connect :datagram, {:host => "10.0.0.1", :port => 8088, :timeout => 1}
-      expect {
-        mi.uptime
-      }.to raise_error Timeout::Error
+      expect(mi.uptime.code).to be(500)
+      expect(mi.uptime.success).to be_falsey
+      expect(mi.uptime.message).to eq("recvfrom timed out after 1 seconds")
     end
   end
 

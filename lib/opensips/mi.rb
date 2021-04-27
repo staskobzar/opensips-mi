@@ -1,7 +1,7 @@
 require 'ostruct'
 require 'fcntl'
 require 'securerandom'
-require 'socket'
+require 'socketry'
 require 'xmlrpc/client'
 
 require "opensips/mi/version"
