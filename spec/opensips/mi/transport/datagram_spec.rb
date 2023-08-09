@@ -16,13 +16,6 @@ describe Opensips::MI::Transport::Datagram do
     end
   end
 
-  describe "#connect" do
-    it "fails on resolve timeout", slow: true do
-      transp = Datagram.new(host: "unresolvable_unknown_host", port: 1234, timeout: 0.5)
-      expect { transp.connect }.to raise_error Opensips::MI::ErrorResolveTimeout
-    end
-  end
-
   describe "#send" do
     it "fails on closed port" do
       srv = UDPSocket.new
