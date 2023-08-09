@@ -1,6 +1,21 @@
 # Ignore temporary files
 .*swp
 *~
+\#*\#
+.\#*
+# flymake-mode
+*_flymake.*
+# Flycheck
+flycheck_*.el
+
+# server auth directory
+/server/
+
+# projectiles files
+.projectile
+
+# directory configuration
+.dir-locals.el
 
 *.gem
 *.rbc
@@ -27,4 +42,3 @@ doc/
 .DS_Store
 results.html
 html
-
