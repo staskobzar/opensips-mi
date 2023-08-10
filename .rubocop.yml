@@ -24,3 +24,6 @@ Metrics/BlockLength:
 Style/MixinUsage:
   Exclude:
     - "spec/**/*"
+
+Gemspec/RequireMFA:
+  Enabled: false
