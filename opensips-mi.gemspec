@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/staskobzar/opensips-mi"
   spec.metadata["changelog_uri"] = "https://github.com/staskobzar/opensips-mi/releases"
+  spec.metadata["github_repo"] = "https://github.com/staskobzar/opensips-mi.git"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   # Specify which files should be added to the gem when it is released.
@@ -27,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir.chdir(__dir__) do
     `git ls-files -z`.split("\x0").reject do |f|
       (File.expand_path(f) == __FILE__) ||
-        f.start_with?(*%w[bin/ examples/ spec/ features/ .git .github .rpec .rubocop.yml .gitignore])
+        f.start_with?(*%w[bin/ examples/ spec/ features/ .git .github .rspec .rubocop.yml .gitignore])
     end
   end
   spec.require_paths = ["lib"]
