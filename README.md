@@ -300,13 +300,3 @@ Send message-summary NOTIFY Event to update phone voicemail status.
 ```ruby
 opensips.mwi_update 'sip:alice@wanderland.com:5060', 'sip:*97@voicemail.pbx.com', 5
 ```
-
----
-
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
