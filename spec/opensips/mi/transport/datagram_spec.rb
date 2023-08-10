@@ -23,7 +23,6 @@ describe Opensips::MI::Transport::Datagram do
       host, port = srv.local_address.getnameinfo
       srv.close
       transp = Datagram.new(host: host, port: port, timeout: 0.5)
-      transp.connect
 
       expect { transp.send("{jsonrpc: 2}") }.to raise_error Errno::ECONNREFUSED
     end
@@ -33,7 +32,6 @@ describe Opensips::MI::Transport::Datagram do
       srv.bind("127.0.0.1", 0)
       host, port = srv.local_address.getnameinfo
       transp = Datagram.new(host: host, port: port, timeout: 0.5)
-      transp.connect
       expect { transp.send("timeout") }.to raise_error Opensips::MI::ErrorSendTimeout
       srv.close
     end
@@ -47,7 +45,6 @@ describe Opensips::MI::Transport::Datagram do
       end
       host, port = srv.local_address.getnameinfo
       transp = Datagram.new(host: host, port: port, timeout: 1)
-      transp.connect
       expect(transp.send("{jsonrpc: 2.0}")).to eq "OK"
 
       thr.exit

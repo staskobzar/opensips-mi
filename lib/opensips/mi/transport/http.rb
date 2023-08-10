@@ -15,12 +15,7 @@ module Opensips
           raise_invalid_params if url.nil?
           seturi(url)
           @timeout ||= 5
-        end
-
-        def connect
-          @client = Net::HTTP.new(@uri.host, @uri.port)
-          @client.read_timeout = @timeout
-          @client.write_timeout = @timeout
+          connect
         end
 
         def send(cmd)
@@ -30,6 +25,14 @@ module Opensips
                   "invalid MI HTTP response: #{resp.message}"
           end
           resp.body
+        end
+
+        private
+
+        def connect
+          @client = Net::HTTP.new(@uri.host, @uri.port)
+          @client.read_timeout = @timeout
+          @client.write_timeout = @timeout
         end
       end
     end

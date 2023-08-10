@@ -16,13 +16,6 @@ describe Opensips::MI::Transport::HTTP do
     end
   end
 
-  describe "#connect" do
-    it "starts http session" do
-      mi = HTTP.new(url: "http://localhost:8080/mi")
-      expect { mi.connect }.not_to raise_error
-    end
-  end
-
   describe "#send" do
     let(:uri) { "http://sip.pbx.com:8800/mi" }
     let(:req_body) { %({"jsonrpc":"2.0","method":"FOO"}) }
@@ -34,7 +27,6 @@ describe Opensips::MI::Transport::HTTP do
         .with(body: req_body, headers: headers)
         .to_return(status: 200, body: res_body)
       mi = HTTP.new(url: uri)
-      mi.connect
       resp = mi.send(req_body)
       expect(resp).to eq res_body
     end
@@ -44,14 +36,12 @@ describe Opensips::MI::Transport::HTTP do
         .with(body: req_body, headers: headers)
         .to_return(status: [400, "Bad Request"])
       mi = HTTP.new(url: uri)
-      mi.connect
       expect { mi.send(req_body) }.to raise_error(Opensips::MI::ErrorHTTPReq, /Bad Request/)
     end
 
     it "raises error on http request timeout" do
       stub_request(:post, uri).to_timeout
       mi = HTTP.new(url: uri, timeout: 0.5)
-      mi.connect
       expect { mi.send(req_body) }.to raise_error Net::OpenTimeout
     end
   end

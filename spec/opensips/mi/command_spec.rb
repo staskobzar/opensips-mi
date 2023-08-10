@@ -60,7 +60,6 @@ describe Opensips::MI::Command do
   describe "#uac_dlg" do
     let(:transp) do
       transp = double("transp")
-      allow(transp).to receive(:connect)
       allow(transp).to receive(:send)
       allow(transp).to receive(:adapter_response)
       transp

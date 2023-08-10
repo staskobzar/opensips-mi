@@ -16,15 +16,7 @@ module Opensips
           raise_invalid_params if @host.nil? || @port.nil?
           raise_invalid_port unless @port.to_i.between?(1, 1 << 16)
           @timeout ||= 5
-        end
-
-        def connect
-          @sock = UDPSocket.new
-          Timeout.timeout(
-            @timeout,
-            Opensips::MI::ErrorResolveTimeout,
-            "failed to resolve address #{@host}:#{@port} within #{@timeout} sec"
-          ) { @sock.connect(@host, @port) }
+          connect
         end
 
         def send(command)
@@ -48,6 +40,17 @@ module Opensips
 
         def raise_invalid_port
           raise Opensips::MI::ErrorParams, "invalid port '#{@port}'"
+        end
+
+        private
+
+        def connect
+          @sock = UDPSocket.new
+          Timeout.timeout(
+            @timeout,
+            Opensips::MI::ErrorResolveTimeout,
+            "failed to resolve address #{@host}:#{@port} within #{@timeout} sec"
+          ) { @sock.connect(@host, @port) }
         end
       end
     end

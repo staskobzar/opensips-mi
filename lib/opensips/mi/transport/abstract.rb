@@ -7,11 +7,6 @@ module Opensips
     module Transport
       # abstruct class for transport protocols
       class Abstract
-        # connect to network end-point
-        def connect
-          raise NotImplementedError
-        end
-
         # send a command to connection and return response
         def send(_command)
           raise NotImplementedError

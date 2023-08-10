@@ -14,9 +14,6 @@ module Opensips
           url, @timeout = args.values_at(:url, :timeout)
           raise_invalid_params if url.nil?
           seturi(url)
-        end
-
-        def connect
           @client = XMLRPC::Client.new2(@uri.to_s, nil, @timeout)
         end
 

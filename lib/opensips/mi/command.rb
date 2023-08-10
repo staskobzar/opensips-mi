@@ -32,7 +32,6 @@ module Opensips
 
       def initialize(transp)
         @transp = transp
-        @transp.connect
       end
 
       # prepare args, pipe them to send to MI using transport

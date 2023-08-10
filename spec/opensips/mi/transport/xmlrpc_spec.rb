@@ -16,13 +16,6 @@ describe Opensips::MI::Transport::Xmlrpc do
     end
   end
 
-  describe "#connect" do
-    it "starts xmlprc session" do
-      mi = Xmlrpc.new(url: "http://localhost:8080/mi")
-      expect { mi.connect }.not_to raise_error
-    end
-  end
-
   describe "#send" do
     let(:uri) { "http://sip.pbx.com:8800/mi" }
     let(:resp_xml_error) do
@@ -43,7 +36,6 @@ describe Opensips::MI::Transport::Xmlrpc do
         .with(headers: { "Content-Type": "text/xml; charset=utf-8" })
         .to_return(status: 200, body: resp_body)
       mi = Xmlrpc.new(url: uri)
-      mi.connect
       resp = mi.send("ps")
       expect(resp["Now"]).to eq "Tue Aug  8 15:06:20 2023"
     end
@@ -52,14 +44,12 @@ describe Opensips::MI::Transport::Xmlrpc do
       stub_request(:post, uri)
         .to_return(status: [400, "Bad Request"])
       mi = Xmlrpc.new(url: uri)
-      mi.connect
       expect { mi.send("foo", "bar") }.to raise_error(Opensips::MI::ErrorHTTPReq, /Bad Request/)
     end
 
     it "raises error on http request timeout" do
       stub_request(:post, uri).to_timeout
       mi = Xmlrpc.new(url: uri, timeout: 0.5)
-      mi.connect
       expect { mi.send("ps") }.to raise_error(Opensips::MI::ErrorHTTPReq, /execution expired/)
     end
 
@@ -67,7 +57,6 @@ describe Opensips::MI::Transport::Xmlrpc do
       stub_request(:post, uri)
         .to_return(status: 200, body: resp_xml_error)
       mi = Xmlrpc.new(url: uri)
-      mi.connect
       expect { mi.send("foo") }.not_to raise_error
     end
 
@@ -75,7 +64,6 @@ describe Opensips::MI::Transport::Xmlrpc do
       stub_request(:post, uri)
         .to_return(status: 200, body: resp_xml_error)
       mi = Xmlrpc.new(url: uri)
-      mi.connect
       resp = mi.send("foo")
       expect(resp).to have_key(:error)
       expect(resp[:error]["message"]).to eq "server error. invalid method parameters"

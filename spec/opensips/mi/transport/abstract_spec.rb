@@ -7,9 +7,6 @@ class Subject < Abstract; end
 describe Opensips::MI::Transport::Abstract do
   subject { Subject.new }
   context "require implement methods" do
-    it "#connect" do
-      expect { subject.connect }.to raise_error NotImplementedError
-    end
     it "#send(*args)" do
       expect { subject.send("") }.to raise_error NotImplementedError
     end
