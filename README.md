@@ -77,8 +77,8 @@ opensips = Opensips::MI.connect :datagram,
 require 'opensips/mi'
 opensips = Opensips::MI.connect :fifo, 
                                 :fifo_name => '/tmp/opensips_fifo',
-                                :reply_fifo => 'opensips_reply' . $$,
-                                :reply_dir => '/tmp'
+                                :reply_dir => '/tmp',
+                                :timeout => 3
 
 ```
 
