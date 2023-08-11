@@ -3,7 +3,6 @@
 [![Ruby Build](https://github.com/staskobzar/opensips-mi/actions/workflows/main.yml/badge.svg)](https://github.com/staskobzar/opensips-mi/actions/workflows/main.yml)
 [![Code Climate](https://codeclimate.com/github/staskobzar/opensips-mi.png)](https://codeclimate.com/github/staskobzar/opensips-mi)
 [![Gem Version](https://badge.fury.io/rb/opensips-mi.svg)](https://badge.fury.io/rb/opensips-mi)
-[![Coverage Status](https://coveralls.io/repos/staskobzar/opensips-mi/badge.png?branch=master)](https://coveralls.io/r/staskobzar/opensips-mi)
 [![Coverage Status](https://coveralls.io/repos/github/staskobzar/opensips-mi/badge.svg?branch=master)](https://coveralls.io/github/staskobzar/opensips-mi?branch=master)
 
 OpenSIPs management interface library.
