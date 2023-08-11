@@ -103,3 +103,10 @@ RSpec.configure do |config|
   # expose the core RSpec DSL via Module and the main object.
   config.expose_dsl_globally = true
 end
+
+def mock_fifo_file
+  name = "/tmp/mock-fifo-file-#{rand(1 << 16)}-#{rand(1 << 16)}"
+  File.mkfifo(name)
+  File.chmod(0o666, name)
+  name
+end

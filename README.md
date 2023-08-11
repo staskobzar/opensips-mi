@@ -9,6 +9,7 @@ OpenSIPs management interface library.
 This library supports following management interfaces OpenSIPs modules:
 
 - mi_datagram
+- mi_fifo
 - mi_http
 - mi_xmlrpc
 
@@ -46,17 +47,13 @@ Parameters:
 _INTRFACE_ - interface name. One of the following:
 
 - :datagram
+- :fifo
 - :http
 - :xmlrpc
 
 _PARAMS_ - connection parameters. Depends on interface. See below.
 
 This function will raise exceptions if there are parameters' or environment errors.
-Function returns instance of one of the following classes:
-
-- Opensips::MI::Transport::Datagram
-- Opensips::MI::Transport::HTTP
-- Opensips::MI::Transport::Xmlrpc
 
 ### Datagram
 
@@ -72,7 +69,25 @@ opensips = Opensips::MI.connect :datagram,
 
 - host: Hostname or IP address of OpenSIPs server
 - port: Datagram port. See mi_datagram module configuration parameter: `modparam("mi_datagram", "socket_name", "udp:192.168.2.133:8080")`
-- timeout: Timeout in seconds to wait send/recv commands. Optional. Default 5 seconds.
+- timeout: (OPTIONAL) Timeout in seconds to wait send/recv commands. Default 5 seconds.
+
+### FIFO
+
+```ruby
+require 'opensips/mi'
+opensips = Opensips::MI.connect :fifo, 
+                                :fifo_name => '/tmp/opensips_fifo',
+                                :reply_fifo => 'opensips_reply' . $$,
+                                :reply_dir => '/tmp'
+
+```
+
+**Parameters hash:** 
+
+- fifo_name: OpenSIPs fifo file. See mi_fifo module parameter: `modparam("mi_fifo", "fifo_name", "/tmp/opensips_fifo")`.
+- reply_dir:  (OPTIONAL) Path to directory of reply fifo file. This directory is defined by opensips module parameter
+`modparam("mi_fifo", "reply_dir", "/home/opensips/tmp/")`. Default is "/tmp"
+- timeout: (OPTIONAL) Timeout in seconds read/write file timeout. Default 5 seconds.
 
 ### HTTP
 
@@ -87,6 +102,7 @@ opensips = Opensips::MI.connect :http,
 
 - url: HTTP MI url. Check OpenSIPS module mi_http for setting of IP, port and root path.
 - timeout: Timeout in seconds to wait send/recv commands. Optional. Default 5 seconds.
+- timeout: (OPTIONAL) Timeout in seconds to wait send/recv commands. Default 5 seconds.
 
 ### XMLRPC
 
@@ -100,7 +116,7 @@ opensips = Opensips::MI.connect :xmlrpc,
 **Parameters hash:**
 
 - url: HTTP MI url. Check OpenSIPS module mi_http for setting of IP, port and root path.
-- timeout: Timeout in seconds to wait send/recv commands. Optional. Default 5 seconds.
+- timeout: (OPTIONAL) Timeout in seconds to wait send/recv commands. Default 5 seconds.
 
 ### Command function
 
