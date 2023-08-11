@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "transport/datagram"
+require_relative "transport/fifo"
 require_relative "transport/http"
 require_relative "transport/xmlrpc"
 

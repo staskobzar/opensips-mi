@@ -44,6 +44,26 @@ describe Opensips::MI do
       expect(procs[0]["PID"]).to be 513_617
     end
 
+    it "via fifo" do
+      res_body = %({"jsonrpc": "2.0","id": 103,"result":{"Proc":[{"ID":9,"PID":51,"Type":"attendant"}]}})
+      fifo_file = mock_fifo_file
+      msg = ""
+      Thread.new do
+        fifo_rd = IO.open(IO.sysopen(fifo_file, Fcntl::O_RDONLY))
+        sleep(0.1) # ensure not block file before main send method
+        cmd = fifo_rd.read_nonblock(1500)
+        _, reply_file, msg = cmd.split(":", 3)
+        path = File.join("/tmp", reply_file)
+        File.write(path, res_body)
+      end
+      mi = Opensips::MI.connect(:fifo, fifo_name: fifo_file, timeout: 1)
+      resp = mi.ps
+      expect(resp).to have_key(:result)
+      expect(resp[:result]["Proc"].length).to be 1
+      expect(resp[:result]["Proc"][0]["ID"]).to be 9
+      expect(msg).to match(/"method":"ps"/)
+    end
+
     it "via xmlrpc" do
       resp_body = %(<?xml version="1.0" encoding="UTF-8"?><methodResponse><params><param><value><struct>
 <member><name>Now</name><value><string>Tue Aug  8 15:06:20 2023</string></value></member>
