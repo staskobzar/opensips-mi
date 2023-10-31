@@ -17,6 +17,9 @@ Layout/LineLength:
 Metrics/ParameterLists:
   Max: 6
 
+Metrics/MethodLength:
+  AllowedMethods: [uac_dlg]
+
 Metrics/BlockLength:
   Exclude:
     - "spec/**/*_spec.rb"

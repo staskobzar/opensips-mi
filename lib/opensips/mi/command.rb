@@ -86,14 +86,20 @@ module Opensips
       #               Ex.: udp:10.130.8.21:5060
       #   body:       (optional, may not be present) request body (if present, requires the "Content-Type"
       #               and "Content-length" headers)
-      def uac_dlg(method, ruri, hdrs, next_hop = ".", socket = ".", body = nil)
+      def uac_dlg(method, ruri, hdrs, next_hop = nil, socket = nil, body = nil)
         validate_hf(hdrs)
 
         headers = hdrs.map { |name, val| "#{name}: #{val}" }.join("\r\n")
         headers << "\r\n\r\n"
 
-        params = [method, ruri, next_hop, socket, headers]
-        params << body unless body.nil?
+        params = {
+          "method" => method,
+          "ruri" => ruri,
+          "headers" => headers
+        }
+        params["next_hop"] = next_hop if next_hop
+        params["socket"] = socket if socket
+        params["body"] = body if body
         command "t_uac_dlg", params
       end
 
@@ -150,7 +156,7 @@ module Opensips
                  "Content-Type" => "application/simple-message-summary" }
 
         body = hbody.map { |k, v| "#{k}: #{v}" }.join("\r\n") << "\r\n\r\n"
-        uac_dlg "NOTIFY", uri, hdrs, ".", ".", body
+        uac_dlg "NOTIFY", uri, hdrs, nil, nil, body
       end
 
       private
