@@ -83,8 +83,11 @@ describe Opensips::MI::Command do
 
       expect(transp).to receive(:adapter_request)
         .with("t_uac_dlg",
-              ["NOTIFY", "sip:alice@pbx.com", ".", ".",
-               "To: sib:bob@pbx.com\r\nFrom: sip:alice@pbx.com\r\n\r\n"])
+              {
+                "method" => "NOTIFY",
+                "ruri" => "sip:alice@pbx.com",
+                "headers" => "To: sib:bob@pbx.com\r\nFrom: sip:alice@pbx.com\r\n\r\n"
+              })
       cmd.uac_dlg("NOTIFY", "sip:alice@pbx.com", { "To" => "sib:bob@pbx.com", "From" => "sip:alice@pbx.com" })
     end
 
@@ -93,8 +96,11 @@ describe Opensips::MI::Command do
         cmd = Command.new(transp)
         expect(transp).to receive(:adapter_request)
           .with("t_uac_dlg",
-                ["NOTIFY", "sip:alice@sip.pbx", ".", ".",
-                 "From: sip:bob@sip.pbx\r\nTo: <sip:alice@sip.pbx>\r\nEvent: check-sync\r\n\r\n"])
+                {
+                  "method" => "NOTIFY",
+                  "ruri" => "sip:alice@sip.pbx",
+                  "headers" => "From: sip:bob@sip.pbx\r\nTo: <sip:alice@sip.pbx>\r\nEvent: check-sync\r\n\r\n"
+                })
         cmd.event_notify("sip:alice@sip.pbx", "check-sync", { "From" => "sip:bob@sip.pbx" })
       end
     end
@@ -103,7 +109,10 @@ describe Opensips::MI::Command do
       it "raise on invalid event" do
         cmd = Command.new(transp)
         expect(transp).to receive(:adapter_request)
-          .with("t_uac_dlg", array_including("NOTIFY", "sip:bob@sip.pbx"))
+          .with("t_uac_dlg", hash_including(
+                               "method" => "NOTIFY",
+                               "ruri" => "sip:bob@sip.pbx"
+                             ))
         cmd.mwi_update("sip:bob@sip.pbx", "sip:*97@sip.pbx", 5)
       end
     end
